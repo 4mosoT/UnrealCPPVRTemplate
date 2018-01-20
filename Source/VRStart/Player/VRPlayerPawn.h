@@ -6,6 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "VRPlayerPawn.generated.h"
 
+class IHeadMountedDisplay;
+class UCameraComponent;
+class USceneComponent;
+
 UCLASS()
 class VRSTART_API AVRPlayerPawn : public APawn
 {
@@ -26,6 +30,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	IHeadMountedDisplay* HMD;
 	
-	
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* DefaultPlayerSceneRoot;
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* VROrigin;
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* Camera;
 };
