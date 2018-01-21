@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GlobalStructs.h"
 #include "Hand.generated.h"
 
 class UMotionControllerComponent;
+class USteamVRChaperoneComponent;
+class UHandAnimInstance;
 
 UCLASS()
 class VRSTART_API AHand : public AActor
@@ -25,6 +28,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void InvertSkeletalMesh();
+	void SetGripStatus(EGripState GripState);
+
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* DefaultHandSceneRoot;
@@ -32,6 +38,11 @@ private:
 	UMotionControllerComponent* MotionController;
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
+	UPROPERTY(VisibleAnywhere)
+	USteamVRChaperoneComponent* Chaperone;
+
+	class UHandAnimInstance* AnimInstance;
+
 
 	
 };

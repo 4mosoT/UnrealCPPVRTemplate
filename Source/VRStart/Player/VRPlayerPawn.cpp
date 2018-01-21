@@ -61,6 +61,11 @@ void AVRPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	InputComponent->BindAxis("MotionControllerThumbLeft_Y", this, &AVRPlayerPawn::MoveForward);
 	InputComponent->BindAxis("MotionControllerThumbLeft_X", this, &AVRPlayerPawn::MoveRight);
+	InputComponent->BindAction("TriggerLeft", IE_Pressed, this, &AVRPlayerPawn::TriggerLeftPressed);
+	InputComponent->BindAction("TriggerRight", IE_Pressed, this, &AVRPlayerPawn::TriggerRightPressed);
+	InputComponent->BindAction("TriggerLeft", IE_Released, this, &AVRPlayerPawn::TriggerLeftReleased);
+	InputComponent->BindAction("TriggerRight", IE_Released, this, &AVRPlayerPawn::TriggerRightReleased);
+
 }
 
 void AVRPlayerPawn::SetDebugText(FText Text)
@@ -85,5 +90,25 @@ void AVRPlayerPawn::MoveRight(float Value)
 		FVector Direction = Camera->GetForwardVector() * Value * 5;
 		SetActorLocation(GetActorLocation() + FVector(-Direction.Y, Direction.X, 0));
 	}
+}
+
+void AVRPlayerPawn::TriggerLeftPressed()
+{
+	LeftController->SetGripStatus(EGripState::Grab);
+}
+
+void AVRPlayerPawn::TriggerRightPressed()
+{
+	RightController->SetGripStatus(EGripState::Grab);
+}
+
+void AVRPlayerPawn::TriggerLeftReleased()
+{
+	LeftController->SetGripStatus(EGripState::Open);
+}
+
+void AVRPlayerPawn::TriggerRightReleased()
+{
+	RightController->SetGripStatus(EGripState::Open);
 }
 

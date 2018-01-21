@@ -3,6 +3,8 @@
 #include "Hand.h"
 #include "MotionControllerComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "SteamVRChaperoneComponent.h"
+#include "AnimationsInstances/HandAnimInstance.h"
 
 
 // Sets default values
@@ -13,18 +15,18 @@ AHand::AHand()
 	DefaultHandSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultHandSceneRoot"));
 	RootComponent = DefaultHandSceneRoot;
 	MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Motion Controller Component"));
-	MotionController->SetupAttachment(GetRootComponent());
+	MotionController->SetupAttachment(RootComponent);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Skeletal Mesh"));
 	SkeletalMesh->SetupAttachment(MotionController);
+	Chaperone = CreateDefaultSubobject<USteamVRChaperoneComponent>(TEXT("Chaperone"));
 	
-
 }
 
 // Called when the game starts or when spawned
 void AHand::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	AnimInstance = Cast<UHandAnimInstance>(SkeletalMesh->GetAnimInstance());
 }
 
 // Called every frame
@@ -36,9 +38,14 @@ void AHand::Tick(float DeltaTime)
 
 void AHand::InvertSkeletalMesh()
 {
-	SkeletalMesh->SetWorldRotation(FRotator(0, 0, 180));
+	//SkeletalMesh->SetWorldRotation(FRotator(0, 0, 180));
 	SkeletalMesh->SetWorldScale3D(FVector(1, 1, -1));
 	MotionController->Hand = EControllerHand::Left;
+}
+
+void AHand::SetGripStatus(EGripState GripState)
+{
+	AnimInstance->GripStatus = GripState;
 }
 
 

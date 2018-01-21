@@ -55,6 +55,9 @@ private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
-	
+	void TriggerLeftPressed();
+	void TriggerRightPressed();
 
+	void TriggerLeftReleased();
+	void TriggerRightReleased();
 };
