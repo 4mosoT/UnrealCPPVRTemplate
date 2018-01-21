@@ -2,6 +2,7 @@
 
 #include "Hand.h"
 #include "MotionControllerComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 
 // Sets default values
@@ -12,7 +13,10 @@ AHand::AHand()
 	DefaultHandSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultHandSceneRoot"));
 	RootComponent = DefaultHandSceneRoot;
 	MotionController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Motion Controller Component"));
-	MotionController->AttachTo(GetRootComponent());
+	MotionController->SetupAttachment(GetRootComponent());
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Skeletal Mesh"));
+	SkeletalMesh->SetupAttachment(MotionController);
+	
 
 }
 
@@ -27,6 +31,15 @@ void AHand::BeginPlay()
 void AHand::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
+
+void AHand::InvertSkeletalMesh()
+{
+	SkeletalMesh->SetWorldRotation(FRotator(0, 0, 180));
+	SkeletalMesh->SetWorldScale3D(FVector(1, 1, -1));
+	MotionController->Hand = EControllerHand::Left;
+}
+
+
 

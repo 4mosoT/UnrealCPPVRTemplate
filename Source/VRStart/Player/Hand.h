@@ -24,11 +24,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void InvertSkeletalMesh();
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* DefaultHandSceneRoot;
 	UPROPERTY(VisibleAnywhere)
 	UMotionControllerComponent* MotionController;
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* SkeletalMesh;
+
 	
 };

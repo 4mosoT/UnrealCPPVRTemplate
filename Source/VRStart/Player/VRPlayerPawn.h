@@ -9,7 +9,8 @@
 class IHeadMountedDisplay;
 class UCameraComponent;
 class USceneComponent;
-
+class UTextRenderComponent;
+class AHand;
 UCLASS()
 class VRSTART_API AVRPlayerPawn : public APawn
 {
@@ -30,13 +31,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	TSubclassOf<AHand> ControllerBlueprint;
+
 private:
 	IHeadMountedDisplay* HMD;
-	
+	AHand* RightController;
+	AHand* LeftController;
+
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* DefaultPlayerSceneRoot;
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* VROrigin;
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* Camera;
+
+	//Text Render For Logging And Debug Purposes
+	UPROPERTY(VisibleAnywhere)
+	UTextRenderComponent* DebugText;
+	void SetDebugText(FText Text);
+
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+
+	
+
 };

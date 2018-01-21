@@ -6,6 +6,11 @@
 #include "IXRTrackingSystem.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/TextRenderComponent.h"
+
+#include "Hand.h"
+
+#include "ConstructorHelpers.h"
 
 
 // Sets default values
@@ -15,10 +20,12 @@ AVRPlayerPawn::AVRPlayerPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	DefaultPlayerSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultPlayerSceneRoot"));
 	RootComponent = DefaultPlayerSceneRoot;
-	VROrigin = CreateDefaultSubobject<USceneComponent>(TEXT("VROrigin2"));
-	VROrigin->AttachTo(GetRootComponent());
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera2"));
-	Camera->AttachTo(VROrigin);
+	VROrigin = CreateDefaultSubobject<USceneComponent>(TEXT("VROrigin"));
+	VROrigin->SetupAttachment(GetRootComponent());
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(VROrigin);
+	DebugText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("DebugText"));
+	DebugText->SetupAttachment(Camera);
 
 }
 
@@ -30,8 +37,14 @@ void AVRPlayerPawn::BeginPlay()
 
 	//Change for the distinct systems the origin tracking
 	GEngine->XRSystem->SetTrackingOrigin(EHMDTrackingOrigin::Floor);
-	
-	
+	if (ControllerBlueprint) {
+		RightController = GetWorld()->SpawnActor<AHand>(ControllerBlueprint, GetTransform());
+		RightController->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+		LeftController = GetWorld()->SpawnActor<AHand>(ControllerBlueprint, GetTransform());
+		LeftController->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+		LeftController->InvertSkeletalMesh();
+
+	}
 	
 }
 
@@ -39,19 +52,38 @@ void AVRPlayerPawn::BeginPlay()
 void AVRPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (GEngine) {
-		
-		uint32 type = HMD->GetHMDDeviceType();
-		const int32 MyNumberKey = 0;
-		GEngine->AddOnScreenDebugMessage(MyNumberKey, 5.f, FColor::Red, FString::Printf(TEXT("\n\n\n\nName is: %i"),type));
-	}
-
+	SetDebugText(FText::FromString(FString::Printf(TEXT("Testing: %s"), *Camera->GetForwardVector().ToString())));
 }
 
 // Called to bind functionality to input
 void AVRPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	InputComponent->BindAxis("MotionControllerThumbLeft_Y", this, &AVRPlayerPawn::MoveForward);
+	InputComponent->BindAxis("MotionControllerThumbLeft_X", this, &AVRPlayerPawn::MoveRight);
+}
 
+void AVRPlayerPawn::SetDebugText(FText Text)
+{
+	DebugText->SetText(Text);
+}
+
+void AVRPlayerPawn::MoveForward(float Value)
+{
+	if (Value != 0.0f)
+	{
+		FVector Direction = Camera->GetForwardVector() * Value * 5;
+		Direction.Z = 0;
+		SetActorLocation(GetActorLocation() + Direction);
+	}
+}
+
+void AVRPlayerPawn::MoveRight(float Value)
+{
+	if (Value != 0.0f)
+	{
+		FVector Direction = Camera->GetForwardVector() * Value * 5;
+		SetActorLocation(GetActorLocation() + FVector(-Direction.Y, Direction.X, 0));
+	}
 }
 
