@@ -43,7 +43,6 @@ void AVRPlayerPawn::BeginPlay()
 		LeftController = GetWorld()->SpawnActor<AHand>(ControllerBlueprint, GetTransform());
 		LeftController->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 		LeftController->InvertSkeletalMesh();
-
 	}
 	
 }
@@ -52,7 +51,13 @@ void AVRPlayerPawn::BeginPlay()
 void AVRPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SetDebugText(FText::FromString(FString::Printf(TEXT("Testing: %s"), *Camera->GetForwardVector().ToString())));
+	//FQuat Orientation;
+	//FVector Position;
+	//FXRSensorProperties Properties;
+	//GEngine->XRSystem->GetTrackingSensorProperties(3, Orientation, Position, Properties);
+
+	//FString::Printf(TEXT("Testing: %s"), *Camera->GetForwardVector().ToString())
+	//SetDebugText(FText::FromString(Position.ToString()));
 }
 
 // Called to bind functionality to input

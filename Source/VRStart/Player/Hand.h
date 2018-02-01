@@ -10,6 +10,8 @@
 class UMotionControllerComponent;
 class USteamVRChaperoneComponent;
 class UHandAnimInstance;
+class USphereComponent;
+class UHapticFeedbackEffect_Base;
 
 UCLASS()
 class VRSTART_API AHand : public AActor
@@ -30,6 +32,11 @@ public:
 	void InvertSkeletalMesh();
 	void SetGripStatus(EGripState GripState);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Haptic")
+	UHapticFeedbackEffect_Base* HapticBase;
+	UPROPERTY(EditDefaultsOnly, Category = "Haptic")
+	float HapticForce = .5f;
+
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -40,9 +47,14 @@ private:
 	USkeletalMeshComponent* SkeletalMesh;
 	UPROPERTY(VisibleAnywhere)
 	USteamVRChaperoneComponent* Chaperone;
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* CollisionSphere;
 
 	class UHandAnimInstance* AnimInstance;
 
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	
 };
