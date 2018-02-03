@@ -100,6 +100,7 @@ void AVRPlayerPawn::MoveRight(float Value)
 void AVRPlayerPawn::TriggerLeftPressed()
 {
 	LeftController->SetGripStatus(EGripState::Grab);
+	
 }
 
 void AVRPlayerPawn::TriggerRightPressed()

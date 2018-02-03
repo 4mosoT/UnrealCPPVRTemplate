@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "SteamVRChaperoneComponent.h"
 #include "AnimationsInstances/HandAnimInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 // Sets default values
@@ -42,7 +43,7 @@ void AHand::BeginPlay()
 void AHand::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 }
 
 void AHand::InvertSkeletalMesh()
@@ -67,12 +68,21 @@ void AHand::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(OtherComp);
 		if (Mesh && Mesh->IsSimulatingPhysics()) {
 			GetWorld()->GetFirstPlayerController()->PlayHapticEffect(HapticBase, MotionController->Hand, HapticForce);
-			AnimInstance->GripStatus = EGripState::CanGrab;
+			SetGripStatus(EGripState::CanGrab);
 		}
 	}
 }
 
 void AHand::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AnimInstance->GripStatus = EGripState::Open;	
+	SetGripStatus(EGripState::Open);
+}
+
+void AHand::GrabActor()
+{
+	//for (AActor* Actor : CollisionSphere->GetOverlappingActors) {
+		//UKismetSystemLibrary::DoesImplementInterface(Actor, )
+
+
+	//}
 }
