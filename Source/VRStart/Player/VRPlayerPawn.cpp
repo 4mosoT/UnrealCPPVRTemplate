@@ -71,6 +71,9 @@ void AVRPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	InputComponent->BindAction("TriggerLeft", IE_Released, this, &AVRPlayerPawn::TriggerLeftReleased);
 	InputComponent->BindAction("TriggerRight", IE_Released, this, &AVRPlayerPawn::TriggerRightReleased);
 
+	InputComponent->BindAction("GripRight", IE_Pressed, this, &AVRPlayerPawn::GrabWeapon);
+
+
 }
 
 void AVRPlayerPawn::SetDebugText(FText Text)
@@ -116,5 +119,10 @@ void AVRPlayerPawn::TriggerLeftReleased()
 void AVRPlayerPawn::TriggerRightReleased()
 {
 	RightController->ReleaseActor();
+}
+
+void AVRPlayerPawn::GrabWeapon()
+{
+	
 }
 

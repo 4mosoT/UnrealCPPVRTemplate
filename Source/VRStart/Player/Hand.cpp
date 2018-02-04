@@ -90,7 +90,7 @@ void AHand::GrabActor()
 		for (AActor* Actor : OverlappedActors) {
 			IPickableActorInterface* PickableInterface = Cast<IPickableActorInterface>(Actor);
 			if (PickableInterface) {
-				PickableInterface->Pickup(RootComponent);
+				PickableInterface->Pickup(SkeletalMesh);
 				AttachedActor = Actor;
 				break;
 			}
@@ -101,7 +101,7 @@ void AHand::ReleaseActor()
 {
 	SetGripStatus(EGripState::Open);
 	bWantsToGrab = false;
-	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == GetRootComponent()) {
+	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == SkeletalMesh) {
 		Cast<IPickableActorInterface>(AttachedActor)->Drop();
 	}
 	else {
