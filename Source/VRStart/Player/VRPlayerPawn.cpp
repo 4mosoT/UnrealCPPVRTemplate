@@ -99,22 +99,22 @@ void AVRPlayerPawn::MoveRight(float Value)
 
 void AVRPlayerPawn::TriggerLeftPressed()
 {
-	LeftController->SetGripStatus(EGripState::Grab);
-	
+	LeftController->GrabActor();
 }
 
 void AVRPlayerPawn::TriggerRightPressed()
 {
-	RightController->SetGripStatus(EGripState::Grab);
+	RightController->GrabActor();
+
 }
 
 void AVRPlayerPawn::TriggerLeftReleased()
 {
-	LeftController->SetGripStatus(EGripState::Open);
+	LeftController->ReleaseActor();
 }
 
 void AVRPlayerPawn::TriggerRightReleased()
 {
-	RightController->SetGripStatus(EGripState::Open);
+	RightController->ReleaseActor();
 }
 

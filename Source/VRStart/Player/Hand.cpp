@@ -7,7 +7,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "SteamVRChaperoneComponent.h"
 #include "AnimationsInstances/HandAnimInstance.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "PickableActorInterface.h"
+
 
 
 // Sets default values
@@ -43,6 +44,9 @@ void AHand::BeginPlay()
 void AHand::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (AnimInstance->GripStatus == EGripState::Grab) SkeletalMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
+	else SkeletalMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 
 }
 
@@ -63,8 +67,7 @@ void AHand::SetGripStatus(EGripState GripState)
 void AHand::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// Other Actor is the actor that triggered the event. Check that is not ourself.
-	if ((OtherComp != nullptr))
-	{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && !bWantsToGrab) {
 		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(OtherComp);
 		if (Mesh && Mesh->IsSimulatingPhysics()) {
 			GetWorld()->GetFirstPlayerController()->PlayHapticEffect(HapticBase, MotionController->Hand, HapticForce);
@@ -75,14 +78,35 @@ void AHand::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 
 void AHand::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if(!bWantsToGrab)
 	SetGripStatus(EGripState::Open);
 }
 
 void AHand::GrabActor()
 {
-	//for (AActor* Actor : CollisionSphere->GetOverlappingActors) {
-		//UKismetSystemLibrary::DoesImplementInterface(Actor, )
+	bWantsToGrab = true;
+	SetGripStatus(EGripState::Grab);
+	CollisionSphere->GetOverlappingActors(OverlappedActors);
+		for (AActor* Actor : OverlappedActors) {
+			IPickableActorInterface* PickableInterface = Cast<IPickableActorInterface>(Actor);
+			if (PickableInterface) {
+				PickableInterface->Pickup(RootComponent);
+				AttachedActor = Actor;
+				break;
+			}
+		}
+}
 
-
-	//}
+void AHand::ReleaseActor()
+{
+	SetGripStatus(EGripState::Open);
+	bWantsToGrab = false;
+	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == GetRootComponent()) {
+		Cast<IPickableActorInterface>(AttachedActor)->Drop();
+	}
+	else {
+		AttachedActor = nullptr;
+	}
+	
+	
 }

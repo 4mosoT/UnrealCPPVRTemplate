@@ -37,6 +37,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Haptic")
 	float HapticForce = .5f;
 
+	void GrabActor();
+	void ReleaseActor();
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -50,13 +52,17 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* CollisionSphere;
 
+	bool bWantsToGrab = false;
+
 	class UHandAnimInstance* AnimInstance;
+
+	TArray<AActor*> OverlappedActors;
+	AActor* AttachedActor;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void GrabActor();
 
 };

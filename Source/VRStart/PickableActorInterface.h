@@ -21,7 +21,7 @@ class VRSTART_API IPickableActorInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void Pickup() = 0;
+	virtual void Pickup(USceneComponent* AttachToComponent) = 0;
 	virtual void Drop() = 0;
 	
 };

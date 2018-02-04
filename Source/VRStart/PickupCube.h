@@ -16,7 +16,7 @@ class VRSTART_API APickupCube : public AStaticMeshActor, public IPickableActorIn
 	GENERATED_BODY()
 	
 public:
-	virtual void Pickup() override;
+	virtual void Pickup(USceneComponent* AttachToThisComponent) override;
 	virtual void Drop() override;
 
 	
