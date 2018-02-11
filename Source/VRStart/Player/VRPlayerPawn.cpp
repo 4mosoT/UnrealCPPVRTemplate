@@ -135,5 +135,5 @@ void AVRPlayerPawn::GripButtonRightPressed()
 void AVRPlayerPawn::GripButtonLeftPressed()
 {
 	if (LeftController->GetAttachedActor() && LeftController->GetAttachedActor()->IsA(AGun::StaticClass()) && !LeftController->IsGrabbing()) LeftController->ReleaseActor();
-	else LeftController->GrabActor(TEXT("GripPoint"));
+	else LeftController->GrabActor(TEXT("InvertedGripPoint"));
 }
