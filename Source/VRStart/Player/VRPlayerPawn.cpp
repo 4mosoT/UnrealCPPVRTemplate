@@ -12,6 +12,8 @@
 
 #include "ConstructorHelpers.h"
 
+#include "Weapons/Gun.h"
+
 
 // Sets default values
 AVRPlayerPawn::AVRPlayerPawn()
@@ -71,7 +73,8 @@ void AVRPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	InputComponent->BindAction("TriggerLeft", IE_Released, this, &AVRPlayerPawn::TriggerLeftReleased);
 	InputComponent->BindAction("TriggerRight", IE_Released, this, &AVRPlayerPawn::TriggerRightReleased);
 
-	InputComponent->BindAction("GripRight", IE_Pressed, this, &AVRPlayerPawn::GrabWeapon);
+	InputComponent->BindAction("GripRight", IE_Pressed, this, &AVRPlayerPawn::GripButtonRightPressed);
+	InputComponent->BindAction("GripLeft", IE_Pressed, this, &AVRPlayerPawn::GripButtonLeftPressed);
 
 
 }
@@ -113,16 +116,24 @@ void AVRPlayerPawn::TriggerRightPressed()
 
 void AVRPlayerPawn::TriggerLeftReleased()
 {
+	if(LeftController->IsGrabbing())
 	LeftController->ReleaseActor();
 }
 
 void AVRPlayerPawn::TriggerRightReleased()
 {
+	if (RightController->IsGrabbing())
 	RightController->ReleaseActor();
 }
 
-void AVRPlayerPawn::GrabWeapon()
+void AVRPlayerPawn::GripButtonRightPressed()
 {
-	
+	if (RightController->GetAttachedActor() && RightController->GetAttachedActor()->IsA(AGun::StaticClass()) && !RightController->IsGrabbing()) RightController->ReleaseActor();
+	else RightController->GrabActor(TEXT("GripPoint"));
 }
 
+void AVRPlayerPawn::GripButtonLeftPressed()
+{
+	if (LeftController->GetAttachedActor() && LeftController->GetAttachedActor()->IsA(AGun::StaticClass()) && !LeftController->IsGrabbing()) LeftController->ReleaseActor();
+	else LeftController->GrabActor(TEXT("GripPoint"));
+}

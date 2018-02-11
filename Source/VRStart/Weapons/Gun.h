@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	AGun();
 
-	virtual void Pickup(USceneComponent* AttachToThisComponent) override;
+	virtual bool Pickup(USceneComponent* AttachToThisComponent, FName Socket) override;
 	virtual void Drop() override;
 
 protected:

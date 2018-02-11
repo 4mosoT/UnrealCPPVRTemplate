@@ -61,5 +61,8 @@ private:
 	void TriggerLeftReleased();
 	void TriggerRightReleased();
 
-	void GrabWeapon();
+	void GripButtonRightPressed();
+	void GripButtonLeftPressed();
+
 };
+

@@ -37,8 +37,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Haptic")
 	float HapticForce = .5f;
 
-	void GrabActor();
+	void GrabActor(FName Socket = TEXT(""));
 	void ReleaseActor();
+	AActor* GetAttachedActor();
+	bool IsGrabbing();
 
 private:
 	UPROPERTY(VisibleAnywhere)

@@ -3,10 +3,15 @@
 #include "PickupCube.h"
 #include "Components/StaticMeshComponent.h"
 
-void APickupCube::Pickup(USceneComponent* AttachToThisComponent)
+bool APickupCube::Pickup(USceneComponent* AttachToThisComponent, FName Socket)
 {
-	GetStaticMeshComponent()->SetSimulatePhysics(false);
-	AttachToComponent(AttachToThisComponent, FAttachmentTransformRules::KeepWorldTransform);
+	bool result = false;
+	if (Socket.IsNone()) {
+		GetStaticMeshComponent()->SetSimulatePhysics(false);
+		AttachToComponent(AttachToThisComponent, FAttachmentTransformRules::KeepWorldTransform);
+		result = true;
+	}
+	return result;
 }
 
 

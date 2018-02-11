@@ -14,10 +14,13 @@ AGun::AGun()
 
 }
 
-void AGun::Pickup(USceneComponent * AttachToThisComponent)
+bool AGun::Pickup(USceneComponent * AttachToThisComponent, FName Socket)
 {
+	
 	GunMesh->SetSimulatePhysics(false);
-	AttachToComponent(AttachToThisComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("GripPoint"));
+	if (!Socket.IsNone())	AttachToComponent(AttachToThisComponent, FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
+	else AttachToComponent(AttachToThisComponent, FAttachmentTransformRules::KeepWorldTransform);
+	return true;
 	
 }
 
@@ -28,6 +31,7 @@ void AGun::Drop()
 	
 
 }
+
 
 // Called when the game starts or when spawned
 void AGun::BeginPlay()

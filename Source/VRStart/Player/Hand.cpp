@@ -9,7 +9,7 @@
 #include "AnimationsInstances/HandAnimInstance.h"
 #include "PickableActorInterface.h"
 
-
+#include "Weapons/Gun.h"
 
 // Sets default values
 AHand::AHand()
@@ -52,10 +52,8 @@ void AHand::Tick(float DeltaTime)
 
 void AHand::InvertSkeletalMesh()
 {
-	//SkeletalMesh->SetWorldRotation(FRotator(0, 0, 180));
 	SkeletalMesh->SetWorldScale3D(FVector(1, 1, -1));
 	MotionController->Hand = EControllerHand::Left;
-	
 }
 
 void AHand::SetGripStatus(EGripState GripState)
@@ -82,31 +80,44 @@ void AHand::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 	SetGripStatus(EGripState::Open);
 }
 
-void AHand::GrabActor()
+void AHand::GrabActor(FName Socket)
 {
-	bWantsToGrab = true;
-	SetGripStatus(EGripState::Grab);
-	CollisionSphere->GetOverlappingActors(OverlappedActors);
+	if (!AttachedActor) {
+
+		if (Socket.IsNone()) { //That means that GripButton was pressed
+			bWantsToGrab = true;
+			SetGripStatus(EGripState::Grab);
+		}
+
+		CollisionSphere->GetOverlappingActors(OverlappedActors);
 		for (AActor* Actor : OverlappedActors) {
 			IPickableActorInterface* PickableInterface = Cast<IPickableActorInterface>(Actor);
-			if (PickableInterface) {
-				PickableInterface->Pickup(SkeletalMesh);
+			if (PickableInterface && PickableInterface->Pickup(SkeletalMesh, Socket)) {
 				AttachedActor = Actor;
+				//if (!Socket.IsNone() && MotionController->Hand == EControllerHand::Left) Cast<AGun>(AttachedActor)->InvertMesh();				
 				break;
 			}
 		}
+	}
 }
 
 void AHand::ReleaseActor()
 {
 	SetGripStatus(EGripState::Open);
 	bWantsToGrab = false;
-	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == SkeletalMesh) {
-		Cast<IPickableActorInterface>(AttachedActor)->Drop();
-	}
-	else {
-		AttachedActor = nullptr;
-	}
-	
+	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == SkeletalMesh) Cast<IPickableActorInterface>(AttachedActor)->Drop();
+	AttachedActor = nullptr;
 	
 }
+
+AActor * AHand::GetAttachedActor()
+{
+	return AttachedActor;
+}
+
+bool AHand::IsGrabbing()
+{
+	return bWantsToGrab;
+}
+
+
