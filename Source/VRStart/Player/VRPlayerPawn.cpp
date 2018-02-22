@@ -105,35 +105,44 @@ void AVRPlayerPawn::MoveRight(float Value)
 
 void AVRPlayerPawn::TriggerLeftPressed()
 {
-	LeftController->GrabActor();
+	if (LeftController->GetAttachedActor()) {
+		AGun* AttachedGun = Cast<AGun>(LeftController->GetAttachedActor());
+		if (AttachedGun) AttachedGun->Fire();
+	}
+	else {
+		LeftController->GrabActor();
+	}
 }
 
 void AVRPlayerPawn::TriggerRightPressed()
 {
-	RightController->GrabActor();
-
+	if (RightController->GetAttachedActor()) {
+		AGun* AttachedGun = Cast<AGun>(RightController->GetAttachedActor());
+		if (AttachedGun) AttachedGun->Fire();
+	}
+	else {
+		RightController->GrabActor();
+	}
 }
 
 void AVRPlayerPawn::TriggerLeftReleased()
 {
-	if(LeftController->IsGrabbing())
-	LeftController->ReleaseActor();
+	if(LeftController->IsGrabbing())	LeftController->ReleaseActor();
 }
 
 void AVRPlayerPawn::TriggerRightReleased()
 {
-	if (RightController->IsGrabbing())
-	RightController->ReleaseActor();
+	if(RightController->IsGrabbing())	RightController->ReleaseActor();
 }
 
 void AVRPlayerPawn::GripButtonRightPressed()
 {
 	if (RightController->GetAttachedActor() && RightController->GetAttachedActor()->IsA(AGun::StaticClass()) && !RightController->IsGrabbing()) RightController->ReleaseActor();
-	else RightController->GrabActor(TEXT("GripPoint"));
+	else RightController->GrabActor(TEXT("RightHandGripPoint"));
 }
 
 void AVRPlayerPawn::GripButtonLeftPressed()
 {
 	if (LeftController->GetAttachedActor() && LeftController->GetAttachedActor()->IsA(AGun::StaticClass()) && !LeftController->IsGrabbing()) LeftController->ReleaseActor();
-	else LeftController->GrabActor(TEXT("InvertedGripPoint"));
+	else LeftController->GrabActor(TEXT("LeftHandGripPoint"));
 }

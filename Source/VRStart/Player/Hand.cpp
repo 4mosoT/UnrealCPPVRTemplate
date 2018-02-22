@@ -7,7 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "SteamVRChaperoneComponent.h"
 #include "AnimationsInstances/HandAnimInstance.h"
-#include "PickableActorInterface.h"
+#include "Interfaces/PickableActorInterface.h"
 
 #include "Weapons/Gun.h"
 
@@ -94,7 +94,6 @@ void AHand::GrabActor(FName Socket)
 			IPickableActorInterface* PickableInterface = Cast<IPickableActorInterface>(Actor);
 			if (PickableInterface && PickableInterface->Pickup(SkeletalMesh, Socket)) {
 				AttachedActor = Actor;
-				//if (!Socket.IsNone() && MotionController->Hand == EControllerHand::Left) Cast<AGun>(AttachedActor)->InvertMesh();				
 				break;
 			}
 		}
@@ -103,10 +102,10 @@ void AHand::GrabActor(FName Socket)
 
 void AHand::ReleaseActor()
 {
-	SetGripStatus(EGripState::Open);
-	bWantsToGrab = false;
-	if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == SkeletalMesh) Cast<IPickableActorInterface>(AttachedActor)->Drop();
-	AttachedActor = nullptr;
+		SetGripStatus(EGripState::Open);
+		bWantsToGrab = false;
+		if (AttachedActor && AttachedActor->GetRootComponent()->GetAttachParent() == SkeletalMesh) Cast<IPickableActorInterface>(AttachedActor)->Drop();
+		AttachedActor = nullptr;
 	
 }
 
@@ -119,5 +118,6 @@ bool AHand::IsGrabbing()
 {
 	return bWantsToGrab;
 }
+
 
 

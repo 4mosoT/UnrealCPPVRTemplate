@@ -43,6 +43,7 @@ public:
 	bool IsGrabbing();
 
 private:
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* DefaultHandSceneRoot;
 	UPROPERTY(VisibleAnywhere)

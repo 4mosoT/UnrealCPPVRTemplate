@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
-#include "PickableActorInterface.h"
+#include "Interfaces/PickableActorInterface.h"
 #include "PickupCube.generated.h"
 
 /**
