@@ -12,21 +12,21 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionComp->InitSphereRadius(2.0f);
-	CollisionComp->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
-	RootComponent = CollisionComp;
-	
-
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
-	ProjectileMesh->SetupAttachment(RootComponent);
+	
+	ProjectileMesh->SetSimulatePhysics(true);
+	ProjectileMesh->SetNotifyRigidBodyCollision(true);
+	ProjectileMesh->bGenerateOverlapEvents = false;
+	ProjectileMesh->BodyInstance.bUseCCD = true;
+	RootComponent = ProjectileMesh;
 
 	
-
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->InitialSpeed = 3000.f;
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
+
+	InitialLifeSpan = 5;
 	
 }
 
@@ -34,7 +34,8 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+
 }
 
 // Called every frame
@@ -50,7 +51,7 @@ void AProjectile::OnHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPri
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
 	{
 		//OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
+		UE_LOG(LogTemp, Warning, TEXT("Removed"))
 		Destroy();
 	}
 }

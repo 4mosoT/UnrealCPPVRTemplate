@@ -8,6 +8,7 @@
 #include "SteamVRChaperoneComponent.h"
 #include "AnimationsInstances/HandAnimInstance.h"
 #include "Interfaces/PickableActorInterface.h"
+#include "XRMotionControllerBase.h"
 
 #include "Weapons/Gun.h"
 
@@ -53,7 +54,9 @@ void AHand::Tick(float DeltaTime)
 void AHand::InvertSkeletalMesh()
 {
 	SkeletalMesh->SetWorldScale3D(FVector(1, 1, -1));
-	MotionController->Hand = EControllerHand::Left;
+	//MotionController->Hand = EControllerHand::Left;
+	MotionController->MotionSource = FXRMotionControllerBase::LeftHandSourceId;
+	
 }
 
 void AHand::SetGripStatus(EGripState GripState)
@@ -68,8 +71,10 @@ void AHand::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && !bWantsToGrab) {
 		UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(OtherComp);
 		if (Mesh && Mesh->IsSimulatingPhysics()) {
-			GetWorld()->GetFirstPlayerController()->PlayHapticEffect(HapticBase, MotionController->Hand, HapticForce);
+			//GetWorld()->GetFirstPlayerController()->PlayHapticEffect(HapticBase, MotionController->MotionSource, HapticForce);
 			SetGripStatus(EGripState::CanGrab);
+			
+
 		}
 	}
 }

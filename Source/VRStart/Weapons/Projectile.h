@@ -19,7 +19,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,12 +33,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovement;
 
-	/** Sphere collision component */
-	UPROPERTY(VisibleAnywhere)
-		class USphereComponent* CollisionComp;
 
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+
 	
 	
 };
